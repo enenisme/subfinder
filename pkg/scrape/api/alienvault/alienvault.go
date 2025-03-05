@@ -6,7 +6,7 @@ import (
 	"fmt"
 	"io"
 
-	"github.com/enenisme/Subfinder/pkg/scrape"
+	"github.com/enenisme/subfinder/pkg/scrape"
 )
 
 type Source struct{}
