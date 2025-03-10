@@ -2,6 +2,7 @@ package config
 
 import (
 	"flag"
+	"os"
 )
 
 type Options struct {
@@ -31,18 +32,24 @@ type DomainsResult struct {
 func ParseOptions() *Options {
 	options := &Options{}
 
-	flag.StringVar(&options.Domain, "d", "", "需要扫描的域名")
-	flag.StringVar(&options.DomainsFile, "df", "", "需要扫描的域名文件")
-	flag.StringVar(&options.OutputFile, "o", "", "输出文件")
-	flag.IntVar(&options.TimeoutWithSecond, "t", 10, "等待源响应的秒数，秒级别")
-	flag.IntVar(&options.MaxEnumerateTimeWithMinute, "m", 10, "等待枚举的最长时间，分钟级别")
+	// 创建新的 FlagSet 来避免与其他包的 flags 冲突
+	flags := flag.NewFlagSet("subfinder", flag.ContinueOnError)
 
-	stdOut := flag.Bool("s", true, "是否输出到标准输出")
-	ip := flag.Bool("ip", false, "是否查询IP并输出")
-	recordType := flag.Bool("rt", false, "是否查询记录类型并输出")
-	outputJson := flag.Bool("oj", false, "是否输出json格式")
+	flags.StringVar(&options.Domain, "d", "", "需要扫描的域名")
+	flags.StringVar(&options.DomainsFile, "df", "", "需要扫描的域名文件")
+	flags.StringVar(&options.OutputFile, "o", "", "输出文件")
+	flags.IntVar(&options.TimeoutWithSecond, "t", 10, "等待源响应的秒数，秒级别")
+	flags.IntVar(&options.MaxEnumerateTimeWithMinute, "m", 10, "等待枚举的最长时间，分钟级别")
 
-	flag.Parse()
+	stdOut := flags.Bool("s", true, "是否输出到标准输出")
+	ip := flags.Bool("ip", false, "是否查询IP并输出")
+	recordType := flags.Bool("rt", false, "是否查询记录类型并输出")
+	outputJson := flags.Bool("oj", false, "是否输出json格式")
+
+	// 只解析未解析的参数
+	if !flags.Parsed() {
+		_ = flags.Parse(os.Args[1:])
+	}
 
 	options.StdOut = *stdOut
 	options.IP = *ip
@@ -51,11 +58,3 @@ func ParseOptions() *Options {
 
 	return options
 }
-
-var Logo = `
-  _        _ /\ ____        _      __ _           _           
- | |      | |/\/ ___| _   _| |__  / _(_)_ __   __| | ___ _ __ 
- | |   _  | |  \___ \| | | | '_ \| |_| | '_ \ / _ |/  _ \ '__|
- | |__| |_| |   ___) | |_| | |_) |  _| | | | | (_| |  __/ |
- |_____\___/   |____/ \__,_|_.__/|_| |_|_| |_|\__,_|\___|_|
-`

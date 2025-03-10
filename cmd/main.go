@@ -9,7 +9,7 @@ import (
 )
 
 func main() {
-	fmt.Println(config.Logo)
+	// fmt.Println(config.Logo)
 	opts := config.ParseOptions()
 	//opts := &config.Options{
 	//	Domain:                     "huaun.com",
