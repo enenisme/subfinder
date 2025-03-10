@@ -8,14 +8,16 @@ import (
 type Subfinder struct {
 	Domain     string
 	DomainFile string
+	Timeout    int
 
 	Subdomains []config.DomainsResult
 }
 
-func NewSubfinder(domain string, domainFile string) *Subfinder {
+func NewSubfinder(domain string, domainFile string, timeout int) *Subfinder {
 	return &Subfinder{
 		Domain:     domain,
 		DomainFile: domainFile,
+		Timeout:    timeout,
 	}
 }
 
@@ -23,6 +25,7 @@ func (s *Subfinder) Run() error {
 	opts := config.ParseOptions()
 	opts.Domain = s.Domain
 	opts.DomainsFile = s.DomainFile
+	opts.TimeoutWithSecond = s.Timeout
 	runner, err := r.NewRunner(opts)
 	if err != nil {
 		return err
